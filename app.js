@@ -1,8 +1,10 @@
 const express = require('express');
 const request = require('request');
 
+const config = require('./config');
+
 const app = express();
-const access_token = '';
+const access_token = config.accessToken;
 
 app.use(express.json());
 
@@ -11,7 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/webhook', (req, res) => {
-    if(req.query['hub.verify_token'] === 'my_personal_teacher_token'){
+    if(req.query['hub.verify_token'] === config.verifyToken){
         res.send(req.query['hub.challenge']);
     } else {
         res.send('My personal teacher no tienes permisos.');
