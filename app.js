@@ -1,6 +1,8 @@
 const express = require('express');
+const request = require('request');
 
 const app = express();
+const access_token = '';
 
 app.use(express.json());
 
@@ -21,13 +23,46 @@ app.post('/webhook', (req, res) => {
 
     if(webhook_event.messaging) {
         webhook_event.messaging.forEach(event => {
-            console.log(event);
+            handleMessage(event);
         })
     }
     
     res.sendStatus(200);
-})
+});
 
+
+function handleMessage(event){
+    const senderId = event.sender.id;
+    const messageText = event.message.text;
+    const messageData = {
+        recipient: {
+            id: senderId
+        },
+        message: {
+            text: messageText
+        }
+    }
+    callSendApi(messageData);
+}
+
+function callSendApi(response) {
+    request({
+        "uri": "https://graph.facebook.com/me/messages",
+        "qs": {
+            "access_token": access_token
+        },
+        "method": "POST",
+        "json": response
+        },
+        function(err) {
+            if(err) {
+                console.log('Ha ocurrido un error')
+            } else {
+                console.log('Mensaje enviado')
+            }
+        }
+    );
+};
 
 app.listen(5000, () => {
     console.log('server is running in port: 5000');
