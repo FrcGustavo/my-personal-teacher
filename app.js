@@ -35,12 +35,22 @@ app.post('/webhook', (req, res) => {
 function handleEvent(senderId, event){
     if(event.message){
         handleMessage(senderId, event.message)
+    } else if(event.postback) {
+        handlePostback(senderId, event.postback.payload)
     }
 }
 
 function handleMessage(senderId, event){
     if(event.text){
         defaultMessage(senderId);
+    }
+}
+
+function handlePostback(senderId, payload){
+    switch (payload) {
+        case "GET_STARTED_PUGPIZZA":
+            console.log(payload)
+        break;
     }
 }
 
