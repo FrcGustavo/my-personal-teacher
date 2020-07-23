@@ -37,14 +37,14 @@ function handleEvent(senderId, event){
         handleMessage(senderId, event.message)
     } else if(event.postback) {
         handlePostback(senderId, event.postback.payload)
-    } else if (event.attachments) {
-        handleAttachments(senderId, event)
-    }
+    } 
 }
 
 function handleMessage(senderId, event){
     if(event.text){
-        defaultMessage(senderId);
+        messageImage(senderId);
+    } else if (event.attachments) {
+        handleAttachments(senderId, event)
     }
 }
 
@@ -223,6 +223,23 @@ function sizePizza(senderId) {
         }
     }
     console.log('SENDED');
+    callSendApi(messageData);
+}
+
+function messageImage(senderId) {
+    const messageData = {
+        "recipient": {
+            "id": senderId
+        },
+        "message": {
+            "attachment": {
+                "type": "image",
+                "payload": {
+                    "url": "https://media.giphy.com/media/1dOIvm5ynwYolB2Xlh/giphy.gif"
+                }
+            }
+        }
+    }
     callSendApi(messageData);
 }
 
