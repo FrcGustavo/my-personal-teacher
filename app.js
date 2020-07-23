@@ -49,9 +49,16 @@ function handleMessage(senderId, event){
 }
 
 function handlePostback(senderId, payload){
+    console.log(payload);
     switch (payload) {
         case "GET_STARTED_PUGPIZZA":
             console.log(payload)
+        break;
+        case "PIZZAS_PAYLOAD":
+            showPizzas(senderId);
+        break;
+        case "PEPPERONI_PAYLOAD":
+            sizePizza(senderId);
         break;
     }
 }
@@ -113,6 +120,7 @@ function defaultMessage(senderId) {
 }
 
 function callSendApi(response) {
+    console.log(response);
     request({
         "uri": "https://graph.facebook.com/me/messages",
         "qs": {
@@ -130,6 +138,51 @@ function callSendApi(response) {
         }
     );
 };
+
+function showPizzas(senderId) {
+    const messageData = {
+        "recipient": {
+            "id": senderId
+        },
+        "message": {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                        {
+                            "title": "Peperoni",
+                            "subtitle": "Con todo el sabor del peperoni",
+                            "image_url": "https://s3.amazonaws.com/chewiekie/img/productos-pizza-peperoni-champinones.jpg",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Elegir Pepperoni",
+                                    "payload": "PEPPERONI_PAYLOAD",
+                                }
+                            ]
+                        },
+                        {
+                            "title": "Pollo BBQ",
+                            "subtitle": "Con todo el sabor del BBQ",
+                            "image_url": "https://s3.amazonaws.com/chewiekie/img/productos-pizza-peperoni-champinones.jpg",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Elegir Pollo BBQ",
+                                    "payload": "BBQ_PAYLOAD",
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    }
+    callSendApi(messageData)
+}
+
+
 
 app.listen(5000, () => {
     console.log('server is running in port: 5000');
